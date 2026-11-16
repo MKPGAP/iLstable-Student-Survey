@@ -281,6 +281,19 @@ textarea { resize: vertical; min-height: 80px; }
 
       <div class="grid2">
         <div class="field">
+          <label>Full Name <span class="req">*</span></label>
+          <input type="text" id="full_name" placeholder="Your full name">
+          <div class="err-msg" id="full_name-err">Please enter your full name.</div>
+        </div>
+        <div class="field">
+          <label>Email Address <span class="req">*</span></label>
+          <input type="email" id="email" placeholder="your@email.com">
+          <div class="err-msg" id="email-err">Please enter a valid email address.</div>
+        </div>
+      </div>
+
+      <div class="grid2">
+        <div class="field">
           <label>Gender <span class="req">*</span></label>
           <select id="gender">
             <option value="">Select…</option>
@@ -629,6 +642,16 @@ document.querySelectorAll('.check-item input').forEach(input => {
 function validate(sec) {
   let ok = true;
   if (sec === 1) {
+    const fn = document.getElementById('full_name');
+    const fnErr = document.getElementById('full_name-err');
+    if (!fn.value.trim()) { fn.classList.add('error'); fnErr.classList.add('show'); ok = false; }
+    else { fn.classList.remove('error'); fnErr.classList.remove('show'); }
+
+    const em = document.getElementById('email');
+    const emErr = document.getElementById('email-err');
+    if (!em.value.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em.value)) { em.classList.add('error'); emErr.classList.add('show'); ok = false; }
+    else { em.classList.remove('error'); emErr.classList.remove('show'); }
+
     ['gender','age','university','faculty','year','district'].forEach(id => {
       const el = document.getElementById(id);
       const err = document.getElementById(id+'-err');
@@ -694,6 +717,8 @@ function goBack() {
 
 function submitForm() {
   const data = {
+    full_name: document.getElementById('full_name').value.trim(),
+    email: document.getElementById('email').value.trim(),
     gender: document.getElementById('gender').value,
     age: document.getElementById('age').value,
     university: document.getElementById('university').value,
