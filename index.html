@@ -1,0 +1,762 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Student Income Survey</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
+
+<style>
+/* Layout: single-column card form, centered, max 640px */
+:root {
+  --bg: #F0F4F8;
+  --surface: #FFFFFF;
+  --surface2: #F7FAFC;
+  --border: #CBD5E0;
+  --accent: #1A6B49;
+  --accent-lt: #E6F4EE;
+  --accent-dark: #145538;
+  --fg: #1A202C;
+  --fg2: #4A5568;
+  --fg3: #718096;
+  --red: #E53E3E;
+  --red-lt: #FFF5F5;
+  --amber: #D97706;
+  --amber-lt: #FFFBEB;
+  --radius: 12px;
+  --shadow: 0 1px 3px rgba(0,0,0,.08), 0 4px 16px rgba(0,0,0,.06);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0D1117; --surface: #161B22; --surface2: #1C2430;
+    --border: #2D3748; --fg: #E2E8F0; --fg2: #A0AEC0; --fg3: #718096;
+    --accent-lt: #0F2D1E; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0D1117; --surface: #161B22; --surface2: #1C2430;
+  --border: #2D3748; --fg: #E2E8F0; --fg2: #A0AEC0; --fg3: #718096;
+  --accent-lt: #0F2D1E; color-scheme: dark;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--fg);
+  min-height: 100vh;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 32px;
+}
+
+.wrapper { max-width: 640px; margin: 0 auto; }
+
+/* Header */
+.header {
+  background: linear-gradient(135deg, var(--accent) 0%, #2D8A63 100%);
+  border-radius: var(--radius) var(--radius) 0 0;
+  padding: 32px 32px 28px;
+  color: #fff;
+}
+.header-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: rgba(255,255,255,.18); border-radius: 20px;
+  padding: 4px 12px; font-size: 12px; font-weight: 600;
+  letter-spacing: .04em; margin-bottom: 16px;
+}
+.header h1 { font-size: 24px; font-weight: 800; line-height: 1.2; text-wrap: balance; }
+.header p { font-size: 14px; color: rgba(255,255,255,.8); margin-top: 8px; line-height: 1.6; }
+.header-meta {
+  display: flex; gap: 20px; margin-top: 20px; flex-wrap: wrap;
+}
+.header-meta span {
+  font-size: 12px; color: rgba(255,255,255,.75);
+  display: flex; align-items: center; gap: 5px;
+}
+
+/* Progress bar */
+.progress-bar {
+  background: var(--surface); border-left: 1px solid var(--border); border-right: 1px solid var(--border);
+  padding: 14px 32px;
+}
+.progress-track { background: var(--border); border-radius: 99px; height: 6px; overflow: hidden; }
+.progress-fill { background: var(--accent); height: 100%; border-radius: 99px; transition: width .4s ease; }
+.progress-label { font-size: 12px; color: var(--fg3); margin-top: 6px; }
+
+/* Form card */
+.form-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-top: none;
+  border-radius: 0 0 var(--radius) var(--radius);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+
+/* Section */
+.section {
+  padding: 28px 32px;
+  border-bottom: 1px solid var(--border);
+  display: none;
+}
+.section.active { display: block; }
+
+.section-title {
+  font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
+  color: var(--accent); margin-bottom: 20px;
+  display: flex; align-items: center; gap: 8px;
+}
+.section-title::after {
+  content: ''; flex: 1; height: 1px; background: var(--accent-lt);
+}
+
+/* Field */
+.field { margin-bottom: 20px; }
+.field:last-child { margin-bottom: 0; }
+
+label {
+  display: block; font-size: 13px; font-weight: 600; color: var(--fg2);
+  margin-bottom: 7px;
+}
+label .req { color: var(--red); margin-left: 2px; }
+label .hint { font-weight: 400; color: var(--fg3); font-size: 12px; margin-left: 4px; }
+
+input, select, textarea {
+  width: 100%; padding: 10px 14px;
+  background: var(--surface2); border: 1.5px solid var(--border);
+  border-radius: 8px; font-family: inherit; font-size: 14px;
+  color: var(--fg); transition: border-color .15s;
+  outline: none;
+}
+input:focus, select:focus, textarea:focus {
+  border-color: var(--accent);
+  background: var(--surface);
+  box-shadow: 0 0 0 3px rgba(26,107,73,.12);
+}
+input.error, select.error { border-color: var(--red); }
+.err-msg { font-size: 12px; color: var(--red); margin-top: 5px; display: none; }
+.err-msg.show { display: block; }
+
+textarea { resize: vertical; min-height: 80px; }
+
+/* Two-column grid */
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+@media (max-width: 480px) { .grid2 { grid-template-columns: 1fr; } }
+
+/* Checkbox/radio group */
+.check-group { display: flex; flex-direction: column; gap: 8px; }
+.check-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 14px; border-radius: 8px;
+  border: 1.5px solid var(--border); cursor: pointer;
+  transition: border-color .15s, background .15s;
+  background: var(--surface2);
+}
+.check-item:hover { border-color: var(--accent); background: var(--accent-lt); }
+.check-item input[type="checkbox"],
+.check-item input[type="radio"] {
+  width: 16px; height: 16px; flex-shrink: 0;
+  accent-color: var(--accent); cursor: pointer;
+  padding: 0;
+}
+.check-item input[type="checkbox"],
+.check-item input[type="radio"] { border: none; background: none; box-shadow: none; }
+.check-item input[type="checkbox"]:focus,
+.check-item input[type="radio"]:focus { box-shadow: none; }
+.check-label { font-size: 14px; color: var(--fg2); flex: 1; }
+.check-item.selected { border-color: var(--accent); background: var(--accent-lt); }
+.check-item.selected .check-label { color: var(--fg); font-weight: 500; }
+
+/* Income row */
+.income-row {
+  display: flex; align-items: center; gap: 12px;
+  padding: 12px 14px; border-radius: 8px; border: 1.5px solid var(--border);
+  background: var(--surface2); margin-bottom: 10px;
+}
+.income-row-label { font-size: 13px; font-weight: 500; color: var(--fg2); flex: 1; min-width: 0; }
+.income-row input {
+  width: 140px; flex-shrink: 0; font-variant-numeric: tabular-nums;
+}
+.income-prefix {
+  font-size: 12px; font-weight: 600; color: var(--fg3);
+  white-space: nowrap;
+}
+@media (max-width: 480px) {
+  .income-row { flex-wrap: wrap; }
+  .income-row input { width: 100%; }
+}
+
+/* Info box */
+.info-box {
+  background: var(--accent-lt); border: 1px solid rgba(26,107,73,.2);
+  border-radius: 8px; padding: 12px 14px;
+  font-size: 13px; color: var(--fg2); line-height: 1.6;
+  margin-bottom: 20px; display: flex; gap: 10px;
+}
+.info-box svg { flex-shrink: 0; margin-top: 1px; color: var(--accent); }
+
+/* Footer / nav */
+.form-footer {
+  padding: 20px 32px;
+  display: flex; justify-content: space-between; align-items: center;
+  border-top: 1px solid var(--border);
+  background: var(--surface2);
+}
+.btn {
+  padding: 10px 24px; border-radius: 8px; font-family: inherit;
+  font-size: 14px; font-weight: 600; cursor: pointer; border: none;
+  transition: opacity .15s, transform .1s;
+}
+.btn:active { transform: scale(.98); }
+.btn-primary {
+  background: var(--accent); color: #fff;
+}
+.btn-primary:hover { background: var(--accent-dark); }
+.btn-secondary {
+  background: var(--surface); border: 1.5px solid var(--border);
+  color: var(--fg2);
+}
+.btn-secondary:hover { border-color: var(--fg3); }
+.btn:disabled { opacity: .45; cursor: not-allowed; }
+
+/* Total row */
+.total-row {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 14px 16px; border-radius: 8px;
+  background: var(--accent-lt); border: 1px solid rgba(26,107,73,.2);
+  margin-top: 12px;
+}
+.total-label { font-size: 13px; font-weight: 600; color: var(--accent); }
+.total-value { font-size: 18px; font-weight: 800; color: var(--accent); font-variant-numeric: tabular-nums; }
+
+/* Thank-you screen */
+.thank-you { display: none; padding: 40px 32px; text-align: center; }
+.thank-you.active { display: block; }
+.thank-you-icon {
+  width: 64px; height: 64px; border-radius: 50%;
+  background: var(--accent-lt); display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 20px;
+}
+.thank-you h2 { font-size: 22px; font-weight: 800; margin-bottom: 8px; }
+.thank-you p { font-size: 14px; color: var(--fg2); line-height: 1.7; max-width: 380px; margin: 0 auto 24px; }
+.response-id {
+  font-size: 12px; color: var(--fg3); background: var(--surface2);
+  border: 1px solid var(--border); border-radius: 6px;
+  padding: 6px 14px; display: inline-block; font-variant-numeric: tabular-nums;
+}
+</style>
+
+<div class="wrapper">
+  <div class="header">
+    <div class="header-badge">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+      iLstable Research
+    </div>
+    <h1>Sri Lankan University Student Monthly Income Survey</h1>
+    <p>Help us build an accurate financial picture for university students across Sri Lanka. Your responses are anonymous and used only for research within the iLstable platform.</p>
+    <div class="header-meta">
+      <span>
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        Takes ~4 minutes
+      </span>
+      <span>
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        Anonymous &amp; confidential
+      </span>
+      <span>
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+        2025 academic year
+      </span>
+    </div>
+  </div>
+
+  <div class="progress-bar">
+    <div class="progress-track"><div class="progress-fill" id="progressFill" style="width:25%"></div></div>
+    <div class="progress-label" id="progressLabel">Section 1 of 4 — Personal &amp; Academic Details</div>
+  </div>
+
+  <div class="form-card">
+
+    <!-- Section 1: Personal & Academic -->
+    <div class="section active" id="sec1">
+      <div class="section-title">Personal &amp; Academic Details</div>
+
+      <div class="grid2">
+        <div class="field">
+          <label>Gender <span class="req">*</span></label>
+          <select id="gender">
+            <option value="">Select…</option>
+            <option>Male</option>
+            <option>Female</option>
+            <option>Prefer not to say</option>
+          </select>
+          <div class="err-msg" id="gender-err">Please select your gender.</div>
+        </div>
+        <div class="field">
+          <label>Age <span class="req">*</span></label>
+          <select id="age">
+            <option value="">Select…</option>
+            <option>18</option><option>19</option><option>20</option>
+            <option>21</option><option>22</option><option>23</option>
+            <option>24</option><option>25</option><option>26+</option>
+          </select>
+          <div class="err-msg" id="age-err">Please select your age.</div>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>University <span class="req">*</span></label>
+        <select id="university">
+          <option value="">Select your university…</option>
+          <option>University of Colombo</option>
+          <option>University of Peradeniya</option>
+          <option>University of Moratuwa</option>
+          <option>University of Sri Jayewardenepura</option>
+          <option>University of Kelaniya</option>
+          <option>University of Ruhuna</option>
+          <option>University of Jaffna</option>
+          <option>University of Vavuniya</option>
+          <option>Eastern University of Sri Lanka</option>
+          <option>South Eastern University of Sri Lanka</option>
+          <option>Rajarata University of Sri Lanka</option>
+          <option>Sabaragamuwa University of Sri Lanka</option>
+          <option>Wayamba University of Sri Lanka</option>
+          <option>Uva Wellassa University</option>
+          <option>Open University of Sri Lanka</option>
+          <option>University of the Visual &amp; Performing Arts</option>
+          <option>Sri Lanka Institute of Information Technology (SLIIT)</option>
+          <option>NSBM Green University</option>
+          <option>Other</option>
+        </select>
+        <div class="err-msg" id="university-err">Please select your university.</div>
+      </div>
+
+      <div class="grid2">
+        <div class="field">
+          <label>Faculty / Department <span class="req">*</span></label>
+          <select id="faculty">
+            <option value="">Select…</option>
+            <option>Engineering</option>
+            <option>Science</option>
+            <option>Medicine</option>
+            <option>Arts &amp; Humanities</option>
+            <option>Management &amp; Commerce</option>
+            <option>Law</option>
+            <option>Education</option>
+            <option>Agriculture</option>
+            <option>IT &amp; Computing</option>
+            <option>Social Sciences</option>
+            <option>Other</option>
+          </select>
+          <div class="err-msg" id="faculty-err">Please select your faculty.</div>
+        </div>
+        <div class="field">
+          <label>Year of Study <span class="req">*</span></label>
+          <select id="year">
+            <option value="">Select…</option>
+            <option>Year 1</option><option>Year 2</option>
+            <option>Year 3</option><option>Year 4</option>
+            <option>Year 5+</option>
+          </select>
+          <div class="err-msg" id="year-err">Please select your year.</div>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>District of Origin <span class="req">*</span></label>
+        <select id="district">
+          <option value="">Select your home district…</option>
+          <option>Colombo</option><option>Gampaha</option><option>Kalutara</option>
+          <option>Kandy</option><option>Matale</option><option>Nuwara Eliya</option>
+          <option>Galle</option><option>Matara</option><option>Hambantota</option>
+          <option>Jaffna</option><option>Kilinochchi</option><option>Mannar</option>
+          <option>Vavuniya</option><option>Mullaitivu</option>
+          <option>Batticaloa</option><option>Ampara</option><option>Trincomalee</option>
+          <option>Kurunegala</option><option>Puttalam</option>
+          <option>Anuradhapura</option><option>Polonnaruwa</option>
+          <option>Badulla</option><option>Monaragala</option>
+          <option>Ratnapura</option><option>Kegalle</option>
+        </select>
+        <div class="err-msg" id="district-err">Please select your district.</div>
+      </div>
+
+      <div class="field">
+        <label>Living Situation During Term <span class="req">*</span></label>
+        <div class="check-group" id="living">
+          <label class="check-item"><input type="radio" name="living" value="University hostel"> <span class="check-label">University hostel / hall of residence</span></label>
+          <label class="check-item"><input type="radio" name="living" value="Private boarding"> <span class="check-label">Private boarding room / rented room</span></label>
+          <label class="check-item"><input type="radio" name="living" value="Family home"> <span class="check-label">Family home (commuting to uni)</span></label>
+          <label class="check-item"><input type="radio" name="living" value="Shared apartment"> <span class="check-label">Shared apartment with other students</span></label>
+        </div>
+        <div class="err-msg" id="living-err">Please select your living situation.</div>
+      </div>
+    </div>
+
+    <!-- Section 2: Income Sources -->
+    <div class="section" id="sec2">
+      <div class="section-title">Monthly Income Sources</div>
+
+      <div class="info-box">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        Enter the average monthly amount in LKR (Sri Lankan Rupees). Leave blank if you don't receive that source.
+      </div>
+
+      <div class="field">
+        <label>Mahapola Scholarship <span class="hint">(if applicable)</span></label>
+        <div class="income-row">
+          <span class="income-row-label">Mahapola higher education scholarship</span>
+          <span class="income-prefix">LKR</span>
+          <input type="number" id="inc_mahapola" placeholder="0" min="0" max="99999">
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Bursary / University Grant <span class="hint">(if applicable)</span></label>
+        <div class="income-row">
+          <span class="income-row-label">University bursary or government grant</span>
+          <span class="income-prefix">LKR</span>
+          <input type="number" id="inc_bursary" placeholder="0" min="0" max="99999">
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Family Support <span class="hint">(monthly average)</span></label>
+        <div class="income-row">
+          <span class="income-row-label">Money from parents or family members</span>
+          <span class="income-prefix">LKR</span>
+          <input type="number" id="inc_family" placeholder="0" min="0" max="299999">
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Part-time / Freelance Work</label>
+        <div class="income-row">
+          <span class="income-row-label">Tutoring, online work, part-time job, etc.</span>
+          <span class="income-prefix">LKR</span>
+          <input type="number" id="inc_parttime" placeholder="0" min="0" max="299999">
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Other Income</label>
+        <div class="income-row">
+          <span class="income-row-label">Any other regular income source</span>
+          <span class="income-prefix">LKR</span>
+          <input type="number" id="inc_other" placeholder="0" min="0" max="299999">
+        </div>
+      </div>
+
+      <div class="total-row">
+        <span class="total-label">Estimated Total Monthly Income</span>
+        <span class="total-value" id="incomeTotal">LKR 0</span>
+      </div>
+
+      <div class="field" style="margin-top:20px">
+        <label>Primary income source <span class="req">*</span></label>
+        <select id="primary_income">
+          <option value="">Select the most significant source…</option>
+          <option>Mahapola scholarship</option>
+          <option>Bursary / university grant</option>
+          <option>Family support</option>
+          <option>Part-time / freelance work</option>
+          <option>Combination of the above</option>
+          <option>Other</option>
+        </select>
+        <div class="err-msg" id="primary_income-err">Please select your primary income source.</div>
+      </div>
+    </div>
+
+    <!-- Section 3: Expenses -->
+    <div class="section" id="sec3">
+      <div class="section-title">Monthly Expenses Breakdown</div>
+
+      <div class="info-box">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        Average monthly spend in LKR. Enter 0 if not applicable.
+      </div>
+
+      <div class="field">
+        <label>Accommodation <span class="req">*</span></label>
+        <div class="income-row">
+          <span class="income-row-label">Rent, hostel fee or boarding cost</span>
+          <span class="income-prefix">LKR</span>
+          <input type="number" id="exp_rent" placeholder="0" min="0">
+        </div>
+        <div class="err-msg" id="exp_rent-err">Please enter accommodation cost (enter 0 if free).</div>
+      </div>
+
+      <div class="income-row" style="border:1.5px solid var(--border); border-radius:8px; margin-bottom:10px; padding:12px 14px; background: var(--surface2);">
+        <span class="income-row-label">Food &amp; meals</span>
+        <span class="income-prefix">LKR</span>
+        <input type="number" id="exp_food" placeholder="0" min="0">
+      </div>
+      <div class="income-row" style="border:1.5px solid var(--border); border-radius:8px; margin-bottom:10px; padding:12px 14px; background: var(--surface2);">
+        <span class="income-row-label">Transport (bus, train, three-wheel)</span>
+        <span class="income-prefix">LKR</span>
+        <input type="number" id="exp_transport" placeholder="0" min="0">
+      </div>
+      <div class="income-row" style="border:1.5px solid var(--border); border-radius:8px; margin-bottom:10px; padding:12px 14px; background: var(--surface2);">
+        <span class="income-row-label">Academic materials (books, stationery)</span>
+        <span class="income-prefix">LKR</span>
+        <input type="number" id="exp_academic" placeholder="0" min="0">
+      </div>
+      <div class="income-row" style="border:1.5px solid var(--border); border-radius:8px; margin-bottom:10px; padding:12px 14px; background: var(--surface2);">
+        <span class="income-row-label">Mobile &amp; internet data</span>
+        <span class="income-prefix">LKR</span>
+        <input type="number" id="exp_mobile" placeholder="0" min="0">
+      </div>
+      <div class="income-row" style="border:1.5px solid var(--border); border-radius:8px; margin-bottom:10px; padding:12px 14px; background: var(--surface2);">
+        <span class="income-row-label">Personal care &amp; clothing</span>
+        <span class="income-prefix">LKR</span>
+        <input type="number" id="exp_personal" placeholder="0" min="0">
+      </div>
+      <div class="income-row" style="border:1.5px solid var(--border); border-radius:8px; margin-bottom:10px; padding:12px 14px; background: var(--surface2);">
+        <span class="income-row-label">Entertainment &amp; eating out</span>
+        <span class="income-prefix">LKR</span>
+        <input type="number" id="exp_entertainment" placeholder="0" min="0">
+      </div>
+      <div class="income-row" style="border:1.5px solid var(--border); border-radius:8px; margin-bottom:0; padding:12px 14px; background: var(--surface2);">
+        <span class="income-row-label">Other monthly expenses</span>
+        <span class="income-prefix">LKR</span>
+        <input type="number" id="exp_other" placeholder="0" min="0">
+      </div>
+
+      <div class="total-row">
+        <span class="total-label">Estimated Total Monthly Expenses</span>
+        <span class="total-value" id="expenseTotal">LKR 0</span>
+      </div>
+    </div>
+
+    <!-- Section 4: Financial Wellbeing -->
+    <div class="section" id="sec4">
+      <div class="section-title">Financial Wellbeing</div>
+
+      <div class="field">
+        <label>How often do you run out of money before month end? <span class="req">*</span></label>
+        <div class="check-group">
+          <label class="check-item"><input type="radio" name="runout" value="Never"> <span class="check-label">Never — I always have a buffer</span></label>
+          <label class="check-item"><input type="radio" name="runout" value="Rarely"> <span class="check-label">Rarely (1–2 times a year)</span></label>
+          <label class="check-item"><input type="radio" name="runout" value="Sometimes"> <span class="check-label">Sometimes (once every few months)</span></label>
+          <label class="check-item"><input type="radio" name="runout" value="Often"> <span class="check-label">Often (most months)</span></label>
+          <label class="check-item"><input type="radio" name="runout" value="Always"> <span class="check-label">Almost every month</span></label>
+        </div>
+        <div class="err-msg" id="runout-err">Please select an option.</div>
+      </div>
+
+      <div class="field">
+        <label>Do you have any monthly savings? <span class="req">*</span></label>
+        <div class="check-group">
+          <label class="check-item"><input type="radio" name="saves" value="Yes, regularly"> <span class="check-label">Yes, I save a fixed amount regularly</span></label>
+          <label class="check-item"><input type="radio" name="saves" value="Yes, occasionally"> <span class="check-label">Yes, but only when I have leftover money</span></label>
+          <label class="check-item"><input type="radio" name="saves" value="No"> <span class="check-label">No, I spend everything I receive</span></label>
+          <label class="check-item"><input type="radio" name="saves" value="In debt"> <span class="check-label">I'm currently in debt / borrowing from others</span></label>
+        </div>
+        <div class="err-msg" id="saves-err">Please select an option.</div>
+      </div>
+
+      <div class="field">
+        <label>Biggest financial challenge as a student <span class="hint">(choose up to 2)</span></label>
+        <div class="check-group" id="challenges">
+          <label class="check-item"><input type="checkbox" value="High cost of living"> <span class="check-label">High cost of living in the university area</span></label>
+          <label class="check-item"><input type="checkbox" value="Insufficient family support"> <span class="check-label">Insufficient family financial support</span></label>
+          <label class="check-item"><input type="checkbox" value="Irregular income"> <span class="check-label">Irregular or unpredictable income</span></label>
+          <label class="check-item"><input type="checkbox" value="Academic expenses"> <span class="check-label">High academic material costs</span></label>
+          <label class="check-item"><input type="checkbox" value="No financial planning skills"> <span class="check-label">Lack of budgeting / financial planning skills</span></label>
+          <label class="check-item"><input type="checkbox" value="Emergency expenses"> <span class="check-label">Unexpected emergency expenses</span></label>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Any additional comments? <span class="hint">(optional)</span></label>
+        <textarea id="comments" placeholder="Share anything about your financial situation that the survey didn't cover…" rows="3"></textarea>
+      </div>
+    </div>
+
+    <!-- Thank you -->
+    <div class="thank-you" id="thankYou">
+      <div class="thank-you-icon">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#1A6B49" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+      </div>
+      <h2>Thank you!</h2>
+      <p>Your response has been recorded. This data helps iLstable build more accurate financial models for Sri Lankan university students.</p>
+      <div class="response-id" id="responseId"></div>
+      <div style="margin-top:20px">
+        <button class="btn btn-secondary" onclick="resetForm()">Submit Another Response</button>
+      </div>
+    </div>
+
+    <div class="form-footer" id="formFooter">
+      <button class="btn btn-secondary" id="btnBack" onclick="goBack()" style="visibility:hidden">← Back</button>
+      <button class="btn btn-primary" id="btnNext" onclick="goNext()">Next →</button>
+    </div>
+  </div>
+</div>
+
+<script>
+let currentSection = 1;
+const totalSections = 4;
+
+const incomeIds = ['inc_mahapola','inc_bursary','inc_family','inc_parttime','inc_other'];
+const expenseIds = ['exp_rent','exp_food','exp_transport','exp_academic','exp_mobile','exp_personal','exp_entertainment','exp_other'];
+
+function fmt(n) {
+  return 'LKR ' + Number(n).toLocaleString('en-LK');
+}
+
+function updateTotals() {
+  const inc = incomeIds.reduce((s,id) => s + (parseFloat(document.getElementById(id)?.value)||0), 0);
+  const exp = expenseIds.reduce((s,id) => s + (parseFloat(document.getElementById(id)?.value)||0), 0);
+  document.getElementById('incomeTotal').textContent = fmt(inc);
+  document.getElementById('expenseTotal').textContent = fmt(exp);
+}
+
+[...incomeIds, ...expenseIds].forEach(id => {
+  const el = document.getElementById(id);
+  if (el) el.addEventListener('input', updateTotals);
+});
+
+// Highlight selected radio/checkbox parents
+document.querySelectorAll('.check-item input').forEach(input => {
+  input.addEventListener('change', () => {
+    if (input.type === 'radio') {
+      document.querySelectorAll(`input[name="${input.name}"]`).forEach(r => {
+        r.closest('.check-item').classList.toggle('selected', r.checked);
+      });
+    } else {
+      input.closest('.check-item').classList.toggle('selected', input.checked);
+    }
+  });
+});
+
+function validate(sec) {
+  let ok = true;
+  if (sec === 1) {
+    ['gender','age','university','faculty','year','district'].forEach(id => {
+      const el = document.getElementById(id);
+      const err = document.getElementById(id+'-err');
+      if (!el.value) { el.classList.add('error'); err.classList.add('show'); ok = false; }
+      else { el.classList.remove('error'); err.classList.remove('show'); }
+    });
+    const living = document.querySelector('input[name="living"]:checked');
+    const livingErr = document.getElementById('living-err');
+    if (!living) { livingErr.classList.add('show'); ok = false; }
+    else livingErr.classList.remove('show');
+  }
+  if (sec === 2) {
+    const pi = document.getElementById('primary_income');
+    const piErr = document.getElementById('primary_income-err');
+    if (!pi.value) { pi.classList.add('error'); piErr.classList.add('show'); ok = false; }
+    else { pi.classList.remove('error'); piErr.classList.remove('show'); }
+  }
+  if (sec === 3) {
+    const rent = document.getElementById('exp_rent');
+    const rentErr = document.getElementById('exp_rent-err');
+    if (rent.value === '') { rent.classList.add('error'); rentErr.classList.add('show'); ok = false; }
+    else { rent.classList.remove('error'); rentErr.classList.remove('show'); }
+  }
+  if (sec === 4) {
+    ['runout','saves'].forEach(name => {
+      const checked = document.querySelector(`input[name="${name}"]:checked`);
+      const err = document.getElementById(name+'-err');
+      if (!checked) { err.classList.add('show'); ok = false; }
+      else err.classList.remove('show');
+    });
+  }
+  return ok;
+}
+
+function updateProgress(sec) {
+  const pct = (sec / totalSections) * 100;
+  document.getElementById('progressFill').style.width = pct + '%';
+  const labels = ['Personal & Academic Details','Monthly Income Sources','Monthly Expenses','Financial Wellbeing'];
+  document.getElementById('progressLabel').textContent = `Section ${sec} of ${totalSections} — ${labels[sec-1]}`;
+}
+
+function goNext() {
+  if (!validate(currentSection)) return;
+  if (currentSection === totalSections) { submitForm(); return; }
+  document.getElementById('sec' + currentSection).classList.remove('active');
+  currentSection++;
+  document.getElementById('sec' + currentSection).classList.add('active');
+  updateProgress(currentSection);
+  document.getElementById('btnBack').style.visibility = 'visible';
+  document.getElementById('btnNext').textContent = currentSection === totalSections ? 'Submit ✓' : 'Next →';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function goBack() {
+  document.getElementById('sec' + currentSection).classList.remove('active');
+  currentSection--;
+  document.getElementById('sec' + currentSection).classList.add('active');
+  updateProgress(currentSection);
+  if (currentSection === 1) document.getElementById('btnBack').style.visibility = 'hidden';
+  document.getElementById('btnNext').textContent = 'Next →';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function submitForm() {
+  const data = {
+    gender: document.getElementById('gender').value,
+    age: document.getElementById('age').value,
+    university: document.getElementById('university').value,
+    faculty: document.getElementById('faculty').value,
+    year: document.getElementById('year').value,
+    district: document.getElementById('district').value,
+    living: document.querySelector('input[name="living"]:checked')?.value,
+    income: {
+      mahapola: +document.getElementById('inc_mahapola').value||0,
+      bursary: +document.getElementById('inc_bursary').value||0,
+      family: +document.getElementById('inc_family').value||0,
+      parttime: +document.getElementById('inc_parttime').value||0,
+      other: +document.getElementById('inc_other').value||0,
+    },
+    primary_income: document.getElementById('primary_income').value,
+    expenses: {
+      rent: +document.getElementById('exp_rent').value||0,
+      food: +document.getElementById('exp_food').value||0,
+      transport: +document.getElementById('exp_transport').value||0,
+      academic: +document.getElementById('exp_academic').value||0,
+      mobile: +document.getElementById('exp_mobile').value||0,
+      personal: +document.getElementById('exp_personal').value||0,
+      entertainment: +document.getElementById('exp_entertainment').value||0,
+      other: +document.getElementById('exp_other').value||0,
+    },
+    run_out_frequency: document.querySelector('input[name="runout"]:checked')?.value,
+    saves: document.querySelector('input[name="saves"]:checked')?.value,
+    challenges: [...document.querySelectorAll('#challenges input:checked')].map(i=>i.value),
+    comments: document.getElementById('comments').value,
+    submitted_at: new Date().toISOString(),
+  };
+
+  // Store locally
+  try {
+    const all = JSON.parse(localStorage.getItem('ilstable_survey') || '[]');
+    all.push(data);
+    localStorage.setItem('ilstable_survey', JSON.stringify(all));
+  } catch(e) {}
+
+  // Show thank you
+  document.getElementById('sec4').classList.remove('active');
+  document.getElementById('formFooter').style.display = 'none';
+  document.getElementById('thankYou').classList.add('active');
+  document.getElementById('responseId').textContent = 'Response ID: ' + Math.random().toString(36).slice(2,10).toUpperCase();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function resetForm() {
+  document.getElementById('thankYou').classList.remove('active');
+  document.getElementById('formFooter').style.display = '';
+  currentSection = 1;
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.getElementById('sec1').classList.add('active');
+  document.getElementById('btnBack').style.visibility = 'hidden';
+  document.getElementById('btnNext').textContent = 'Next →';
+  updateProgress(1);
+  document.querySelectorAll('input, select, textarea').forEach(el => {
+    if (el.type === 'checkbox' || el.type === 'radio') el.checked = false;
+    else el.value = '';
+  });
+  document.querySelectorAll('.check-item').forEach(el => el.classList.remove('selected'));
+  updateTotals();
+}
+</script>
+
+</body></html>
