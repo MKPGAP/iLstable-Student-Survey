@@ -596,6 +596,10 @@ textarea { resize: vertical; min-height: 80px; }
       </div>
     </div>
 
+    <div id="submitError" style="display:none;margin:0 32px 16px;background:#FFF5F5;border:1px solid #FC8181;border-radius:8px;padding:10px 14px;font-size:13px;color:#C53030;gap:8px;align-items:center;">
+      ⚠️ Failed to save response. Please try again.
+    </div>
+
     <div class="form-footer" id="formFooter">
       <button class="btn btn-secondary" id="btnBack" onclick="goBack()" style="visibility:hidden">← Back</button>
       <button class="btn btn-primary" id="btnNext" onclick="goNext()">Next →</button>
@@ -715,7 +719,11 @@ function goBack() {
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-function submitForm() {
+async function submitForm() {
+  const btn = document.getElementById('btnNext');
+  btn.disabled = true;
+  btn.textContent = 'Submitting…';
+
   const data = {
     full_name: document.getElementById('full_name').value.trim(),
     email: document.getElementById('email').value.trim(),
@@ -748,22 +756,35 @@ function submitForm() {
     saves: document.querySelector('input[name="saves"]:checked')?.value,
     challenges: [...document.querySelectorAll('#challenges input:checked')].map(i=>i.value),
     comments: document.getElementById('comments').value,
-    submitted_at: new Date().toISOString(),
   };
 
-  // Store locally
   try {
-    const all = JSON.parse(localStorage.getItem('ilstable_survey') || '[]');
-    all.push(data);
-    localStorage.setItem('ilstable_survey', JSON.stringify(all));
-  } catch(e) {}
+    const res = await fetch('/api/submit', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    });
+    if (!res.ok) throw new Error('Server error');
 
-  // Show thank you
-  document.getElementById('sec4').classList.remove('active');
-  document.getElementById('formFooter').style.display = 'none';
-  document.getElementById('thankYou').classList.add('active');
-  document.getElementById('responseId').textContent = 'Response ID: ' + Math.random().toString(36).slice(2,10).toUpperCase();
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+    // Store locally as backup
+    try {
+      const all = JSON.parse(localStorage.getItem('ilstable_survey') || '[]');
+      all.push(data);
+      localStorage.setItem('ilstable_survey', JSON.stringify(all));
+    } catch(e) {}
+
+    // Show thank you
+    document.getElementById('sec4').classList.remove('active');
+    document.getElementById('formFooter').style.display = 'none';
+    document.getElementById('thankYou').classList.add('active');
+    document.getElementById('responseId').textContent = 'Response ID: ' + Math.random().toString(36).slice(2,10).toUpperCase();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  } catch(e) {
+    btn.disabled = false;
+    btn.textContent = 'Submit ✓';
+    const errEl = document.getElementById('submitError');
+    if (errEl) errEl.style.display = 'flex';
+  }
 }
 
 function resetForm() {
