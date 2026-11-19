@@ -137,7 +137,7 @@ module.exports = async function handler(req, res) {
 
     return res.status(200).json({ ok: true, message: 'Response recorded. Thank you!' })
   } catch (err) {
-    console.error('Survey submit error:', err)
-    return res.status(500).json({ ok: false, error: 'Failed to save response. Please try again.' })
+    console.error('Survey submit error:', err?.message || err)
+    return res.status(500).json({ ok: false, error: err?.message || 'Failed to save response. Please try again.' })
   }
 }
